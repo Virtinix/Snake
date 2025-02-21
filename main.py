@@ -15,23 +15,50 @@ direction = [1,0]
 snake = [[3,3], [2,3], [1,3]]
 food = [8,3]
 game_over = False
+with open("high_score.txt", "r", encoding="utf-8") as f:
+    high_score = int(f.read())
 
 def reset_game():
-    global score, direction, snake, food, game_over
+    """
+    Redémarre le jeu
+    
+    return: rien
+    """
+    global score, direction, snake, food, game_over, high_score
     score = 0
     direction = [1, 0]
     snake = [[3, 3], [2, 3], [1, 3]]
     food = [8,3]
     game_over = False
+    with open("high_score.txt", "r", encoding="utf-8") as f:
+        high_score = int(f.read())
+
+def update_high_score():
+    """
+    Met à jour le high_score
+    
+    return: rien    
+    """
+    global score, high_score
+    if score > high_score:
+        with open("high_score.txt", "w", encoding="utf-8") as f:
+            f.write(str(score))
+            high_score = score
 
 def draw():
+    """
+    Dessine les éléments à l’écran
+    
+    return: rien
+    """
     #effacer puis remplir de noir l'écran
     pyxel.cls(0)
     
+    #message de game over
     if game_over:
         pyxel.text(WIDTH // 2 - 20, HEIGHT // 2 - 15, "GAME OVER", 8)
         pyxel.text(WIDTH // 2 - 60, HEIGHT // 2, "Appuyez sur R pour recommencer", 7)
-        return #arrête l'exécution de la fonction
+        return
 
     #dessiner le corps en vert
     for anneau in snake[1:]:
@@ -44,20 +71,29 @@ def draw():
     #9 = couleur orange
     pyxel.rect(x_head * CASE, y_head * CASE, CASE, CASE, 9)
     
-    #score
-    #7 = couleur blanche
-    pyxel.text(4, 4, f"SCORE : {score}", 7)
-    
     #la nourriture:
     x_food, y_food = food
     #8 = couleur rose
     pyxel.rect(x_food * CASE, y_food * CASE, CASE, CASE, 8)
+    
+    #score
+    #7 = couleur blanche
+    pyxel.text(4, 4, f"SCORE : {score}", 7)
+    
+    #high score
+    pyxel.text(4, 12, f"HIGH SCORE : {high_score}", 7)
 
     
 def update():
+    """
+    Met à jour l'état du jeu 30 fois par seconde
+    
+    return: rien
+    """
     global direction, score, food, game_over
     
     if game_over:
+        update_high_score()
         if pyxel.btn(pyxel.KEY_R):
             reset_game()
         return
@@ -83,6 +119,7 @@ def update():
         #si sa tête touche la pomme
         if head == food:
             score += 1
+            update_high_score()
             while food in snake:
                 food = [randint(0,WIDTH//CASE - 1),randint(0,HEIGHT//CASE - 1)]
         

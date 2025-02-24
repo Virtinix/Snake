@@ -10,14 +10,6 @@ FRAME_REFRESH = 10
 
 pyxel.init(WIDTH, HEIGHT, title=TITLE)
 
-score = 0
-direction = [1,0]
-snake = [[3,3], [2,3], [1,3]]
-food = [8,3]
-game_over = False
-with open("high_score.txt", "r", encoding="utf-8") as f:
-    high_score = int(f.read())
-
 def reset_game():
     """
     Redémarre le jeu
@@ -30,18 +22,20 @@ def reset_game():
     snake = [[3, 3], [2, 3], [1, 3]]
     food = [8,3]
     game_over = False
-    with open("high_score.txt", "r", encoding="utf-8") as f:
+    with open("high_score.txt", "r") as f:
         high_score = int(f.read())
+        
+reset_game()
 
 def update_high_score():
     """
-    Met à jour le high_score
+    Met à jour le high score
     
     return: rien    
     """
     global score, high_score
     if score > high_score:
-        with open("high_score.txt", "w", encoding="utf-8") as f:
+        with open("high_score.txt", "w") as f:
             f.write(str(score))
             high_score = score
 
@@ -71,7 +65,7 @@ def draw():
     #9 = couleur orange
     pyxel.rect(x_head * CASE, y_head * CASE, CASE, CASE, 9)
     
-    #la nourriture:
+    #la nourriture
     x_food, y_food = food
     #8 = couleur rose
     pyxel.rect(x_food * CASE, y_food * CASE, CASE, CASE, 8)

@@ -1,4 +1,4 @@
-Dependecies : 
+Dependencies : 
 "pyxel" library
 
 Installation :
